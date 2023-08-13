@@ -1,0 +1,36 @@
+server
+{
+	listen 443 ssl;
+	ssl_certificate /etc/encryption/localhost/localhost.crt;
+	ssl_certificate_key /etc/encryption/localhost/localhost.key;
+	ssl_password_file /etc/encryption/password.txt;
+	root /var/www/html;
+	index index.php index.html;
+	location / {
+		#try_files $uri =404;
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		fastcgi_pass wordpress:9000;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+
+}
+	location ~ \.php$ {
+		#try_files $uri =404;
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		fastcgi_pass wordpress:9000;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+
+	}
+	location ~* \.css$ {
+        	add_header Content-Type text/css;
+    	}
+
+    location ~* \.js$ {
+        add_header Content-Type application/javascript;
+ 	   }
+}
